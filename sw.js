@@ -4,7 +4,7 @@
  * 通信できるときは常に新しいファイルを取りに行くので、更新ボタンで確実に最新になる。
  * localStorage（入力データ）には触らない。キャッシュを消してもデータは残る。
  */
-const CACHE = 'seikyu-v1.1.2';
+const CACHE = 'seikyu-v1.1.3';
 
 const ASSETS = [
   './',
@@ -25,7 +25,8 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
+    // 同じ github.io 上の他のアプリのキャッシュは消さない（自分の古い版だけ消す）
+    await Promise.all(keys.filter(k => k.startsWith('seikyu-') && k !== CACHE).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
