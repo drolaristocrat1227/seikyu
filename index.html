@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="請求書">
+<title>請求書</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <header class="top">
+    <button class="client-btn" id="clientBtn" type="button">
+      <span id="clientName">請求先なし</span><span class="caret">▾</span>
+    </button>
+    <button class="icon-btn" id="menuBtn" type="button" aria-label="メニュー">
+      <span class="bars"><i></i><i></i><i></i></span>
+    </button>
+  </header>
+
+  <div class="month-bar">
+    <button class="nav" id="prevM" type="button" aria-label="前の月">‹</button>
+    <button class="month" id="monthLabel" type="button"></button>
+    <button class="nav" id="nextM" type="button" aria-label="次の月">›</button>
+  </div>
+
+  <div class="week">
+    <span class="sun">日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span class="sat">土</span>
+  </div>
+  <div class="cal" id="cal"></div>
+
+  <footer class="sum">
+    <div class="sum-text">
+      <span class="sum-label">今月の合計</span>
+      <span class="sum-val" id="monthSum">0円</span>
+      <span class="sum-sub" id="monthDays"></span>
+    </div>
+    <button class="btn dark" id="toInvoice" type="button">請求書を作る</button>
+  </footer>
+</div>
+
+<div id="layer"></div>
+<div id="print-root"></div>
+<div id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

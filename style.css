@@ -1,0 +1,501 @@
+/* 請求書 — 画面用と印刷用 */
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #111;
+  font-family: -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+#app {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+}
+
+/* ---------- ヘッダー ---------- */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 4px 12px;
+}
+.client-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  padding: 8px 4px;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: left;
+}
+.client-btn #clientName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.caret { font-size: 12px; color: #777; }
+.icon-btn {
+  width: 44px; height: 44px;
+  border: 0; background: none;
+  display: grid; place-items: center;
+}
+.bars { display: grid; gap: 5px; }
+.bars i { display: block; width: 20px; height: 2px; background: #111; }
+
+/* ---------- 月送り ---------- */
+.month-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  border-bottom: 1px solid #111;
+}
+.month-bar .nav {
+  width: 48px; height: 44px;
+  border: 0; background: none;
+  font-size: 26px; line-height: 1;
+}
+.month-bar .month {
+  border: 0; background: none;
+  font-size: 18px; font-weight: 700;
+  letter-spacing: .04em;
+  padding: 6px 12px;
+}
+
+/* ---------- カレンダー ---------- */
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 12px;
+  text-align: center;
+  color: #555;
+  padding: 6px 0 4px;
+  border-bottom: 1px solid #ddd;
+}
+.week .sun, .week .sat { color: #999; }
+
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+  grid-auto-rows: minmax(68px, 1fr);
+}
+.day {
+  border: 0;
+  border-right: 1px solid #e4e4e4;
+  border-bottom: 1px solid #e4e4e4;
+  background: #fff;
+  padding: 3px 2px 2px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+.day:nth-child(7n) { border-right: 0; }
+.day .d { font-size: 13px; padding-left: 3px; line-height: 1.3; }
+.day.sun .d, .day.sat .d { color: #999; }
+.day.out { background: #fafafa; }
+.day.out .d { color: #ccc; }
+.day.today .d {
+  display: inline-block;
+  align-self: flex-start;
+  background: #111; color: #fff;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+.day:active { background: #f1f1f1; }
+.tag {
+  display: block;
+  font-size: 10px;
+  line-height: 1.35;
+  border: 1px solid #111;
+  border-radius: 2px;
+  padding: 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+.tag.fill { background: #111; color: #fff; }
+.more { font-size: 10px; color: #777; padding-left: 2px; }
+
+/* ---------- 下部の合計 ---------- */
+.sum {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid #111;
+  background: #fff;
+}
+.sum-text { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; }
+.sum-label { font-size: 12px; color: #666; width: 100%; }
+.sum-val { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sum-sub { font-size: 12px; color: #666; }
+
+/* ---------- ボタン類 ---------- */
+.btn {
+  border: 1px solid #111;
+  background: #fff;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 15px;
+  white-space: nowrap;
+  min-height: 44px;
+}
+.btn.dark { background: #111; color: #fff; }
+.btn.small { padding: 4px 10px; min-height: 34px; font-size: 13px; }
+.btn.wide { width: 100%; }
+.btn.danger { color: #111; border-style: dashed; }
+.btn:disabled { opacity: .35; }
+.btn-row { display: flex; gap: 8px; }
+.btn-row > .btn { flex: 1; }
+.link {
+  border: 0; background: none; padding: 4px 0;
+  text-decoration: underline; text-underline-offset: 3px;
+  font-size: 14px;
+}
+
+/* ---------- レイヤー（シート・パネル） ---------- */
+#layer:empty { display: none; }
+.shade {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 10;
+  animation: fade .15s ease-out;
+}
+@keyframes fade { from { opacity: 0; } }
+@keyframes up { from { transform: translateY(24px); opacity: .6; } }
+@keyframes slide { from { transform: translateX(32px); opacity: .6; } }
+
+.sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  max-width: 560px;
+  margin: 0 auto;
+  max-height: 88dvh;
+  background: #fff;
+  z-index: 11;
+  border-top: 2px solid #111;
+  display: flex;
+  flex-direction: column;
+  animation: up .18s ease-out;
+}
+.panel {
+  position: fixed; inset: 0;
+  background: #fff;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  animation: slide .16s ease-out;
+}
+.panel-inner { width: 100%; max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; height: 100%; }
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 14px;
+  padding-top: calc(6px + env(safe-area-inset-top));
+  border-bottom: 1px solid #111;
+  min-height: 52px;
+}
+.sheet .head { padding-top: 6px; }
+.head h2 { flex: 1; margin: 0; font-size: 16px; font-weight: 700; }
+.head .back {
+  border: 0; background: none;
+  font-size: 15px; padding: 8px 10px;
+}
+.body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 14px 24px;
+}
+.foot {
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid #ddd;
+  background: #fff;
+}
+
+/* ---------- メニュー ---------- */
+.menu { list-style: none; margin: 0; padding: 0; }
+.menu li { border-bottom: 1px solid #e4e4e4; }
+.menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 0; background: none;
+  padding: 15px 2px;
+  font-size: 16px;
+  text-align: left;
+}
+.menu button small { color: #888; font-size: 12px; }
+.menu-sec { font-size: 12px; color: #888; margin: 22px 0 4px; }
+.menu-sec:first-child { margin-top: 4px; }
+.ver { font-size: 12px; color: #999; margin-top: 28px; }
+
+/* ---------- 一覧 ---------- */
+.list { list-style: none; margin: 0 0 14px; padding: 0; border-top: 1px solid #e4e4e4; }
+.list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #e4e4e4;
+  padding: 10px 0;
+}
+.list .main { flex: 1; min-width: 0; }
+.list .t { font-weight: 700; }
+.list .s { font-size: 12px; color: #666; }
+.list .ord { display: flex; flex-direction: column; }
+.list .ord button { border: 1px solid #ccc; background: #fff; width: 32px; height: 22px; font-size: 11px; padding: 0; }
+.list .ord button + button { border-top: 0; }
+.empty { color: #777; font-size: 14px; padding: 18px 0; }
+.note { font-size: 12px; color: #666; margin: 6px 0 14px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 4px; }
+.chip {
+  border: 1px solid #111; background: #fff;
+  border-radius: 16px; padding: 4px 12px;
+  font-size: 13px; white-space: nowrap;
+}
+.chip.on { background: #111; color: #fff; }
+
+/* ---------- フォーム ---------- */
+.field { margin-bottom: 14px; }
+.field > label, .field > .lbl { display: block; font-size: 13px; color: #444; margin-bottom: 4px; }
+.field input[type=text], .field input[type=tel], .field input[type=email],
+.field input[type=number], .field input[type=date], .field select, .field textarea {
+  width: 100%;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background: #fff;
+  padding: 10px;
+  font-size: 16px; /* iOSで拡大されないように16px */
+  min-height: 44px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.field select {
+  background-image: linear-gradient(45deg, transparent 50%, #111 50%), linear-gradient(135deg, #111 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 30px;
+}
+.field textarea { min-height: 72px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid #111; outline-offset: -1px; border-color: #111; }
+.field .hint { font-size: 12px; color: #777; margin-top: 3px; }
+.cols { display: flex; gap: 10px; }
+.cols > .field { flex: 1; min-width: 0; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 15px; padding: 6px 0; }
+.check input { width: 20px; height: 20px; accent-color: #111; }
+fieldset { border: 0; border-top: 1px solid #111; margin: 20px 0 8px; padding: 10px 0 0; }
+legend { font-size: 13px; font-weight: 700; padding-right: 8px; }
+.seal-prev { display: flex; align-items: center; gap: 10px; }
+.seal-prev img { width: 56px; height: 56px; object-fit: contain; border: 1px solid #ddd; }
+
+/* ---------- 日付シート ---------- */
+.items { list-style: none; margin: 0; padding: 0; }
+.items li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+.items .nm { flex: 1; min-width: 0; padding: 4px 0; }
+.items .nm b { display: block; font-weight: 600; }
+.items .nm span { font-size: 12px; color: #666; }
+.items li.on .nm b::before { content: "●"; font-size: 10px; margin-right: 5px; vertical-align: 2px; }
+.step { display: flex; align-items: center; border: 1px solid #111; border-radius: 4px; }
+.step button { width: 40px; height: 38px; border: 0; background: #fff; font-size: 18px; border-radius: 4px; }
+.step input {
+  width: 46px; height: 38px;
+  border: 0; border-left: 1px solid #ddd; border-right: 1px solid #ddd;
+  text-align: center; font-size: 16px;
+  -moz-appearance: textfield;
+}
+.step input::-webkit-inner-spin-button, .step input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.items li:not(.on) .step { border-color: #bbb; }
+.day-total { display: flex; justify-content: space-between; align-items: baseline; }
+.day-total b { font-size: 18px; font-variant-numeric: tabular-nums; }
+
+/* ---------- 請求書作成 ---------- */
+.lines { margin: 0 0 6px; padding: 0; list-style: none; }
+.lines li { border: 1px solid #ccc; border-radius: 4px; padding: 8px; margin-bottom: 8px; }
+.lines .cols { gap: 6px; }
+.lines .field { margin-bottom: 6px; }
+.lines .rm { text-align: right; }
+.calc { border-top: 1px solid #111; margin-top: 8px; padding-top: 8px; font-size: 14px; }
+.calc div { display: flex; justify-content: space-between; padding: 2px 0; font-variant-numeric: tabular-nums; }
+.calc .big { font-size: 18px; font-weight: 700; border-top: 1px solid #ddd; margin-top: 4px; padding-top: 6px; }
+
+/* ---------- プレビュー ---------- */
+.preview-wrap { background: #e9e9e9; padding: 12px 8px; overflow: hidden; }
+.pv-box { overflow: hidden; }
+.preview-scale { transform-origin: top left; width: 210mm; }
+.preview-scale .doc { box-shadow: 0 0 0 1px #ccc; }
+
+/* ---------- トースト ---------- */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  background: #111; color: #fff;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; }
+
+#print-root { display: none; }
+
+/* =========================================================
+   請求書本体（A4縦 210×297mm）
+   ========================================================= */
+.doc {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 15mm 14mm;
+  background: #fff;
+  color: #000;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "BIZ UDMincho", "Noto Serif JP", serif;
+  font-size: 10pt;
+  line-height: 1.55;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.doc .g { font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif; }
+.doc-title {
+  text-align: center;
+  font-size: 22pt;
+  letter-spacing: .6em;
+  text-indent: .6em;
+  font-weight: 600;
+  margin: 0 0 5mm;
+  padding-bottom: 2mm;
+  border-bottom: 3px double #000;
+}
+.doc-meta { text-align: right; font-size: 9.5pt; margin-bottom: 4mm; }
+.doc-meta table { margin-left: auto; border-collapse: collapse; }
+.doc-meta th { font-weight: normal; padding: 0 3mm 0 0; text-align: left; }
+.doc-meta td { text-align: right; }
+
+.doc-parties { display: flex; justify-content: space-between; gap: 8mm; }
+.doc-to { flex: 1.15; }
+.doc-to .nm {
+  margin-top: 0;
+  font-size: 15pt;
+  border-bottom: 1px solid #000;
+  padding: 0 1mm 1mm;
+  margin-bottom: 2mm;
+}
+.doc-to .nm small { font-size: 11pt; margin-left: 3mm; }
+.doc-to .ad { font-size: 9pt; padding-left: 1mm; }
+.doc-to .ad:first-child { margin-bottom: 1.5mm; }
+.doc-from { flex: 1; font-size: 9pt; line-height: 1.45; position: relative; padding-top: 1mm; min-height: 26mm; }
+.doc-from .who { position: relative; margin: 1.5mm 0 1.5mm; min-height: 12mm; }
+.doc-from .nm { font-size: 11.5pt; font-weight: 600; }
+.doc-from .seal {
+  position: absolute;
+  right: 0; top: -4mm;
+  width: 20mm; height: 20mm;
+  object-fit: contain;
+  opacity: .9;
+}
+.doc-from .nm, .doc-from .rep { padding-right: 22mm; }
+
+.doc-lead { margin: 5mm 0 1.5mm; font-size: 10pt; }
+.doc-subject { font-size: 10pt; margin-bottom: 3mm; }
+.doc-amount {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid #000;
+  width: 112mm;
+  margin-bottom: 2mm;
+}
+.doc-amount .l {
+  background: #000; color: #fff;
+  padding: 2.5mm 4mm;
+  font-size: 10.5pt;
+  display: flex; align-items: center;
+  letter-spacing: .1em;
+}
+.doc-amount .v {
+  flex: 1;
+  text-align: right;
+  padding: 1.5mm 4mm;
+  font-size: 18pt;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.doc-amount .v small { font-size: 9pt; font-weight: normal; margin-left: 2mm; }
+.doc-due { font-size: 10pt; margin-bottom: 4mm; }
+
+.doc-table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+.doc-table th, .doc-table td { border: 0.8px solid #000; padding: 1.2mm 2mm; height: 6.8mm; }
+.doc-table thead th { background: #e6e6e6; font-weight: normal; letter-spacing: .1em; text-align: center; }
+.doc-table td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.doc-table td.c { text-align: center; white-space: nowrap; }
+.doc-table .w-date { width: 20mm; }
+.doc-table .w-qty { width: 16mm; }
+.doc-table .w-unit { width: 13mm; }
+.doc-table .w-price { width: 25mm; }
+.doc-table .w-amt { width: 28mm; }
+.doc-table tbody tr { page-break-inside: avoid; break-inside: avoid; }
+.doc-table .rate { font-size: 8pt; margin-left: 1mm; }
+.doc-table tr.ded-first td { border-top: 2.2px solid #000; }
+
+.doc-bottom { display: flex; justify-content: space-between; align-items: flex-start; gap: 6mm; margin-top: 4mm; break-inside: avoid; page-break-inside: avoid; }
+.doc-tax { font-size: 8.5pt; }
+.doc-tax table { border-collapse: collapse; }
+.doc-tax th, .doc-tax td { border: 0.8px solid #000; padding: 1mm 2.5mm; font-weight: normal; }
+.doc-tax th { background: #e6e6e6; }
+.doc-tax td { text-align: right; font-variant-numeric: tabular-nums; }
+.doc-totals { border-collapse: collapse; width: 74mm; font-size: 10pt; }
+.doc-totals th, .doc-totals td { border: 0.8px solid #000; padding: 1.4mm 2.5mm; }
+.doc-totals th { background: #e6e6e6; font-weight: normal; text-align: left; width: 32mm; }
+.doc-totals td { text-align: right; font-variant-numeric: tabular-nums; }
+.doc-totals tr.total th, .doc-totals tr.total td { font-weight: 600; font-size: 11pt; }
+
+.doc-box { border: 0.8px solid #000; margin-top: 4mm; break-inside: avoid; page-break-inside: avoid; }
+.doc-box .h { background: #e6e6e6; border-bottom: 0.8px solid #000; padding: 1mm 3mm; font-size: 9pt; }
+.doc-box .c { padding: 1.5mm 3mm; font-size: 9.5pt; white-space: pre-wrap; min-height: 8mm; }
+.doc-bank td { padding: 0 4mm 0 0; vertical-align: top; }
+.doc-bank td:first-child { white-space: nowrap; color: #000; }
+
+/* =========================================================
+   印刷
+   ========================================================= */
+@page { size: A4 portrait; margin: 8mm 0 8mm; }
+@media print {
+  html, body { background: #fff; }
+  #app, #layer, #toast { display: none !important; }
+  #print-root { display: block !important; }
+  #print-root .doc { box-shadow: none; margin: 0; min-height: 0; padding-top: 2mm; padding-bottom: 0; }
+}
