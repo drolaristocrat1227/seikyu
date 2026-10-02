@@ -4,7 +4,7 @@
  * 通信できるときは常に新しいファイルを取りに行くので、更新ボタンで確実に最新になる。
  * localStorage（入力データ）には触らない。キャッシュを消してもデータは残る。
  */
-const CACHE = 'seikyu-v1.1.3';
+const CACHE = 'seikyu-v1.1.4';
 
 const ASSETS = [
   './',

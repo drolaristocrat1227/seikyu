@@ -3,7 +3,7 @@
   "short_name": "請求書",
   "description": "カレンダーに付けた作業から請求書を作る",
   "lang": "ja",
-  "id": "/seikyu",
+  "id": "/invoice-app/",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

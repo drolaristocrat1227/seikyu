@@ -5,7 +5,7 @@
  *  - 保存のたびに直前の内容を .prev に残し、1日1回の控えを3日分持つ。
  */
 
-const APP_VER = '1.1.3';
+const APP_VER = '1.1.4';
 const KEY = 'seikyu.data';
 const KEY_PREV = 'seikyu.data.prev';
 const KEY_DAILY = 'seikyu.daily';
